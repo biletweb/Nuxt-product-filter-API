@@ -112,6 +112,9 @@ class CategoryController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255'],
+            'description' => ['required', 'string', 'max:255'],
+            'keywords' => ['required', 'string', 'max:255'],
+            'og_description' => ['required', 'string', 'max:255'],
             'parent_id' => ['nullable', 'integer', 'exists:categories,id'],
         ]);
 
@@ -123,6 +126,9 @@ class CategoryController extends Controller
             $slug = Str::slug($request->input('name'));
             $category->slug = $slug;
         }
+        $category->description = $request->input('description');
+        $category->keywords = $request->input('keywords');
+        $category->og_description = $request->input('og_description');
         if ($request->has('parent_id')) {
             $category->parent_id = $request->input('parent_id');
         }
