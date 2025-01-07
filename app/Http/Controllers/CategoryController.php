@@ -13,7 +13,7 @@ class CategoryController extends Controller
         $offset = $request->input('offset', 0);
         $limit = $request->input('limit', 10);
         $categories = Category::where('parent_id', null)
-            ->select('id', 'name', 'slug')
+            ->select('id', 'name', 'slug', 'description', 'keywords', 'og_description')
             ->skip($offset)
             ->take($limit)
             ->get();
@@ -43,7 +43,7 @@ class CategoryController extends Controller
 
         $categoryName = $category->name;
         $breadcrumbs = $this->getBreadcrumbs($category);
-        $categories = $category->children()->select('id', 'name', 'slug')
+        $categories = $category->children()->select('id', 'name', 'slug', 'description', 'keywords', 'og_description')
             ->skip($offset)
             ->take($limit)
             ->get();
@@ -58,6 +58,9 @@ class CategoryController extends Controller
             'breadcrumbs' => $breadcrumbs,
             'categories' => $categories,
             'categoryName' => $categoryName,
+            'description' => $category->description,
+            'keywords' => $category->keywords,
+            'ogDescription' => $category->og_description,
             'categoryFilters' => $categoryFilters,
             'products' => $products,
         ]);
@@ -136,7 +139,7 @@ class CategoryController extends Controller
 
         return response()->json([
             'message' => 'Category created successfully.',
-            'category' => $category->only(['id', 'name', 'slug', 'parent_id']),
+            'category' => $category->only(['id', 'name', 'slug', 'description', 'keywords', 'og_description', 'parent_id']),
         ]);
     }
 }
