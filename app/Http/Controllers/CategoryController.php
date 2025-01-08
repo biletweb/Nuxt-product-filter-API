@@ -10,12 +10,8 @@ class CategoryController extends Controller
 {
     public function index(Request $request)
     {
-        $offset = $request->input('offset', 0);
-        $limit = $request->input('limit', 10);
-        $categories = Category::where('parent_id', null)
+        $categories = Category::whereNull('parent_id')
             ->select('id', 'name', 'slug', 'description', 'keywords', 'og_description')
-            ->skip($offset)
-            ->take($limit)
             ->get();
 
         if ($categories->isEmpty()) {
@@ -43,10 +39,7 @@ class CategoryController extends Controller
 
         $categoryName = $category->name;
         $breadcrumbs = $this->getBreadcrumbs($category);
-        $categories = $category->children()->select('id', 'name', 'slug', 'description', 'keywords', 'og_description')
-            ->skip($offset)
-            ->take($limit)
-            ->get();
+        $categories = $category->children()->select('id', 'name', 'slug', 'description', 'keywords', 'og_description')->get();
         $categoryFilters = $this->getCategoryFilters($category);
         $products = $category->products()->with('attributes.values')
             ->select('id', 'name', 'price')
