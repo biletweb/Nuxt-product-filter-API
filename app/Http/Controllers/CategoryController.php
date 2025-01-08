@@ -42,7 +42,7 @@ class CategoryController extends Controller
         $categories = $category->children()->select('id', 'name', 'slug', 'description', 'keywords', 'og_description')->get();
         $categoryFilters = $this->getCategoryFilters($category);
         $products = $category->products()->with('attributes.values')
-            ->select('id', 'name', 'price')
+            ->select('id', 'name', 'price', 'sale_price')
             ->skip($offset)
             ->take($limit)
             ->get();
