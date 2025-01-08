@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
             $table->decimal('price', 10, 2);
-            $table->decimal('sale_price', 10, 2);
+            $table->decimal('sale_price', 10, 2)->nullable();
             $table->timestamps();
             // Добавляем индекс на поле category_id
             $table->index('category_id');
