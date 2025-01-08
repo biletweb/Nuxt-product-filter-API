@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
 use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class FilterController extends Controller
@@ -15,7 +15,7 @@ class FilterController extends Controller
         $limit = $request->input('limit', 10);
         $category = Category::where('slug', $slug)->first();
 
-        if (!$category) {
+        if (! $category) {
             return response()->json([
                 'error' => 'Category not found.',
             ]);
