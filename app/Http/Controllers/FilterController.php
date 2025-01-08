@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class FilterController extends Controller
@@ -12,10 +13,18 @@ class FilterController extends Controller
         $filters = $request->input('filters', []);
         $offset = $request->input('offset', 0);
         $limit = $request->input('limit', 10);
+        $category = Category::where('slug', $slug)->first();
+
+        if (!$category) {
+            return response()->json([
+                'error' => 'Category not found.',
+            ]);
+        }
+
         $query = Product::query()
             ->with('attributes.values')
-            ->select('id', 'name', 'slug', 'description', 'keywords', 'og_description')
-            ->where('slug', $slug);
+            ->select('id', 'name', 'price', 'sale_price')
+            ->where('category_id', $category->id);
 
         foreach ($filters as $attribute => $valueIds) {
             if (empty($valueIds)) {
