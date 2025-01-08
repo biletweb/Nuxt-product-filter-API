@@ -7,15 +7,15 @@ use Illuminate\Http\Request;
 
 class FilterController extends Controller
 {
-    public function filter(Request $request, $id)
+    public function filter(Request $request, $slug)
     {
         $filters = $request->input('filters', []);
         $offset = $request->input('offset', 0);
         $limit = $request->input('limit', 10);
         $query = Product::query()
             ->with('attributes.values')
-            ->select('id', 'name', 'price', 'category_id')
-            ->where('category_id', $id);
+            ->select('id', 'name', 'slug', 'description', 'keywords', 'og_description')
+            ->where('slug', $slug);
 
         foreach ($filters as $attribute => $valueIds) {
             if (empty($valueIds)) {
