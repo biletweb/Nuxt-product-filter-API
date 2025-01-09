@@ -17,7 +17,7 @@ class FilterController extends Controller
 
         if (! $category) {
             return response()->json([
-                'error' => 'Category not found.',
+                'name' => 'Not found',
             ], 404);
         }
 
@@ -43,7 +43,9 @@ class FilterController extends Controller
         $filteredProducts = $query->skip($offset)->take($limit)->get();
 
         if ($filteredProducts->isEmpty()) {
-            return response()->json(['error' => 'Invalid product filters.'], 404);
+            return response()->json([
+                'name' => 'Not found',
+            ], 404);
         }
 
         return response()->json([
