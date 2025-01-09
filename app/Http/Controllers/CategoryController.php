@@ -16,7 +16,7 @@ class CategoryController extends Controller
 
         if ($categories->isEmpty()) {
             return response()->json([
-                'error' => 'Categories not found.',
+                'name' => 'Categories not found',
             ], 404);
         }
 
@@ -33,7 +33,7 @@ class CategoryController extends Controller
 
         if (! $category) {
             return response()->json([
-                'error' => 'Invalid category slug.',
+                'name' => 'Category not found',
             ], 404);
         }
 

@@ -17,7 +17,7 @@ class FilterController extends Controller
 
         if (! $category) {
             return response()->json([
-                'name' => 'Not found',
+                'name' => 'Category not found',
             ], 404);
         }
 
@@ -44,7 +44,7 @@ class FilterController extends Controller
 
         if ($filteredProducts->isEmpty()) {
             return response()->json([
-                'name' => 'Not found',
+                'name' => 'Invalid filters',
             ], 404);
         }
 
