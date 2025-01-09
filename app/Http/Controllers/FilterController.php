@@ -18,7 +18,7 @@ class FilterController extends Controller
         if (! $category) {
             return response()->json([
                 'error' => 'Category not found.',
-            ]);
+            ], 404);
         }
 
         $query = Product::query()
