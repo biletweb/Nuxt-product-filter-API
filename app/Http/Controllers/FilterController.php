@@ -15,7 +15,7 @@ class FilterController extends Controller
         $limit = $request->input('limit', 10);
         $category = Category::where('slug', $slug)->first();
 
-        if (!$category) {
+        if (! $category) {
             return response()->json([
                 'error' => 'Category not found.',
             ], 404);
@@ -43,7 +43,7 @@ class FilterController extends Controller
         $filteredProducts = $query->skip($offset)->take($limit)->get();
 
         if ($filteredProducts->isEmpty()) {
-            return response()->json(['error' => 'Invalid product filters.'],404);
+            return response()->json(['error' => 'Invalid product filters.'], 404);
         }
 
         return response()->json([
