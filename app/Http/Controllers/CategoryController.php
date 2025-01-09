@@ -33,7 +33,7 @@ class CategoryController extends Controller
 
         if (! $category) {
             return response()->json([
-                'error' => 'Category not found.',
+                'error' => 'Invalid category slug.',
             ], 404);
         }
 

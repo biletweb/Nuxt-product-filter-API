@@ -43,7 +43,7 @@ class FilterController extends Controller
         $filteredProducts = $query->skip($offset)->take($limit)->get();
 
         if ($filteredProducts->isEmpty()) {
-            return response()->json(['error' => 'Invalid filters.'],404);
+            return response()->json(['error' => 'Invalid product filters.'],404);
         }
 
         return response()->json([
