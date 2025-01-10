@@ -11,7 +11,7 @@ Route::post('/category/create', [CategoryController::class, 'createCategory']);
 Route::get('/categories/{slug}/subcategories', [CategoryController::class, 'subcategories']);
 Route::get('/categories/{slug}/products/filter', [FilterController::class, 'filter']);
 
-Route::get('/user', function (Request $request) {
+Route::get('/current-user', function (Request $request) {
     $token = $request->bearerToken();
 
     if (! $token) {
