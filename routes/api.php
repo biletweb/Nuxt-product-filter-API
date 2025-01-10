@@ -18,7 +18,7 @@ Route::get('/current-user', function (Request $request) {
         return response()->json(['error' => 'Access denied. Token not provided.'], 401);
     }
 
-    $response = Http::withToken($token)->get('http://localhost:8000/api/profile');
+    $response = Http::withToken($token)->get('http://localhost:8001/api/profile');
 
     if ($response->failed()) {
         return response()->json(['error' => 'Unauthenticated.'], 401);
