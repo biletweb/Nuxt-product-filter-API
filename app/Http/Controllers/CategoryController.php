@@ -108,7 +108,7 @@ class CategoryController extends Controller
     {
         $category = new Category;
         $category->name = $request->input('name');
-        if ($request->has('slug')) {
+        if ($request->has('slug') && $request->input('slug') !== '') {
             $category->slug = $request->input('slug');
         } else {
             $slug = Str::slug($request->input('name'));
