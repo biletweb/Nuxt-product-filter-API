@@ -24,8 +24,8 @@ class CreateCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'slug' => ['nullable', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255', 'unique:categories,name'],
+            'slug' => ['nullable', 'string', 'max:255', 'unique:categories,slug'],
             'description' => ['required', 'string', 'max:255'],
             'keywords' => ['required', 'string', 'max:255'],
             'og_description' => ['required', 'string', 'max:255'],
