@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateCategoryRequest;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -103,17 +104,8 @@ class CategoryController extends Controller
         return $filters;
     }
 
-    public function createCategory(Request $request)
+    public function createCategory(CreateCategoryRequest $request)
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'slug' => ['nullable', 'string', 'max:255'],
-            'description' => ['required', 'string', 'max:255'],
-            'keywords' => ['required', 'string', 'max:255'],
-            'og_description' => ['required', 'string', 'max:255'],
-            'parent_id' => ['nullable', 'integer', 'exists:categories,id'],
-        ]);
-
         $category = new Category;
         $category->name = $request->input('name');
         if ($request->has('slug')) {
