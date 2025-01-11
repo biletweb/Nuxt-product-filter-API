@@ -106,9 +106,10 @@ class CategoryController extends Controller
 
     public function createCategory(CreateCategoryRequest $request)
     {
+        // dd($request->all());
         $category = new Category;
         $category->name = $request->input('name');
-        if ($request->has('slug') && $request->input('slug') !== '') {
+        if ($request->has('slug') && $request->input('slug') !== null) {
             $category->slug = $request->input('slug');
         } else {
             $slug = Str::slug($request->input('name'));
