@@ -12,7 +12,7 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         $categories = Category::whereNull('parent_id')
-            ->select('id', 'name', 'slug', 'description', 'keywords', 'og_description')
+            ->select('id', 'name', 'slug', 'description', 'og_description')
             ->get();
 
         if ($categories->isEmpty()) {
@@ -40,7 +40,7 @@ class CategoryController extends Controller
 
         $categoryName = $category->name;
         $breadcrumbs = $this->getBreadcrumbs($category);
-        $categories = $category->children()->select('id', 'name', 'slug', 'description', 'keywords', 'og_description')->get();
+        $categories = $category->children()->select('id', 'name', 'slug', 'description', 'og_description')->get();
         $categoryFilters = $this->getCategoryFilters($category);
         $products = $category->products()->with('attributes.values')
             ->select('id', 'name', 'price', 'sale_price')
@@ -53,7 +53,6 @@ class CategoryController extends Controller
             'categories' => $categories,
             'categoryName' => $categoryName,
             'description' => $category->description,
-            'keywords' => $category->keywords,
             'ogDescription' => $category->og_description,
             'categoryFilters' => $categoryFilters,
             'products' => $products,
@@ -115,8 +114,7 @@ class CategoryController extends Controller
             $category->slug = $slug;
         }
         $category->description = $request->input('description');
-        $category->keywords = $request->input('keywords');
-        $category->og_description = $request->input('og_description');
+        $category->og_description = $request->input('description');
         if ($request->has('parent_id')) {
             $category->parent_id = $request->input('parent_id');
         }
@@ -124,7 +122,7 @@ class CategoryController extends Controller
 
         return response()->json([
             'message' => 'Category created successfully.',
-            'category' => $category->only(['id', 'name', 'slug', 'description', 'keywords', 'og_description', 'parent_id']),
+            'category' => $category->only(['id', 'name', 'slug', 'description', 'og_description', 'parent_id']),
         ]);
     }
 }

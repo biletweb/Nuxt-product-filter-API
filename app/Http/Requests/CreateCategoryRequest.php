@@ -27,7 +27,6 @@ class CreateCategoryRequest extends FormRequest
             'name' => ['required', 'string', 'max:255', 'unique:categories,name'],
             'slug' => ['nullable', 'string', 'max:255', 'unique:categories,slug'],
             'description' => ['required', 'string', 'max:255'],
-            'keywords' => ['required', 'string', 'max:255'],
             'og_description' => ['required', 'string', 'max:255'],
             'parent_id' => ['nullable', 'integer', 'exists:categories,id'],
         ];
@@ -59,24 +58,6 @@ class CreateCategoryRequest extends FormRequest
             $response = response()->json([
                 'field' => 'description',
                 'error' => $errors->first('description'),
-            ]);
-
-            throw new ValidationException($validator, $response);
-        }
-
-        if ($errors->has('keywords')) {
-            $response = response()->json([
-                'field' => 'keywords',
-                'error' => $errors->first('keywords'),
-            ]);
-
-            throw new ValidationException($validator, $response);
-        }
-
-        if ($errors->has('og_description')) {
-            $response = response()->json([
-                'field' => 'og_description',
-                'error' => $errors->first('og_description'),
             ]);
 
             throw new ValidationException($validator, $response);

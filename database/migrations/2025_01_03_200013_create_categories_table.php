@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug')->unique()->nullable();
             $table->string('description');
-            $table->string('keywords');
             $table->string('og_description');
             $table->foreignId('parent_id')->nullable()->constrained('categories');
             $table->timestamps();
