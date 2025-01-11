@@ -107,7 +107,7 @@ class CategoryController extends Controller
     {
         $category = new Category;
         $category->name = $request->input('name');
-        if ($request->has('slug') && $request->input('slug') !== null) {
+        if ($request->input('slug')) {
             $category->slug = $request->input('slug');
         } else {
             $slug = Str::slug($request->input('name'));
@@ -115,14 +115,10 @@ class CategoryController extends Controller
         }
         $category->description = $request->input('description');
         $category->og_description = $request->input('description');
-        if ($request->has('parent_id')) {
-            $category->parent_id = $request->input('parent_id');
-        }
         $category->save();
 
         return response()->json([
             'message' => 'Category created successfully.',
-            'category' => $category->only(['id', 'name', 'slug', 'description', 'og_description', 'parent_id']),
         ]);
     }
 }
