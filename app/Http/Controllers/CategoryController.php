@@ -121,4 +121,13 @@ class CategoryController extends Controller
             'message' => 'Category created successfully.',
         ]);
     }
+
+    public function getCategories()
+    {
+        $categories = Category::all();
+
+        return response()->json([
+            'categories' => $categories,
+        ]);
+    }
 }
