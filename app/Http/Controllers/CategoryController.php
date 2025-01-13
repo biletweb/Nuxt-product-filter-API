@@ -130,4 +130,21 @@ class CategoryController extends Controller
             'categories' => $categories,
         ]);
     }
+
+    public function getSubcategories(Request $request)
+    {
+        $category = Category::where('id', $request->input('categoryId'))->first();
+
+        if (! $category) {
+            return response()->json([
+                'name' => 'Category not found',
+            ], 404);
+        }
+
+        $subcategories = $category->children()->select('id', 'name')->get();
+
+        return response()->json([
+            'subcategories' => $subcategories,
+        ]);
+    }
 }
