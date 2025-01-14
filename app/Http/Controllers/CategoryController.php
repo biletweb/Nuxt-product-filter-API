@@ -15,21 +15,15 @@ class CategoryController extends Controller
             ->select('id', 'name', 'slug', 'description', 'og_description')
             ->get();
 
-        if ($categories->isEmpty()) {
-            return response()->json([
-                'name' => 'Categories not found',
-            ], 404);
-        }
-
         return response()->json([
-            'categories' => $categories,
+            'categories' => $categories->isEmpty() ? [] : $categories,
         ]);
     }
 
     public function subcategories(Request $request, $slug)
     {
-        $offset = $request->input('offset', 0);
-        $limit = $request->input('limit', 10);
+        $offset = max(0, (int) $request->input('offset', 0));
+        $limit = max(1, (int) $request->input('limit', 10));
         $category = Category::where('slug', $slug)->first();
 
         if (! $category) {
@@ -38,7 +32,6 @@ class CategoryController extends Controller
             ], 404);
         }
 
-        $categoryName = $category->name;
         $breadcrumbs = $this->getBreadcrumbs($category);
         $categories = $category->children()->select('id', 'name', 'slug', 'description', 'og_description')->get();
         $categoryFilters = $this->getCategoryFilters($category);
@@ -51,7 +44,7 @@ class CategoryController extends Controller
         return response()->json([
             'breadcrumbs' => $breadcrumbs,
             'categories' => $categories,
-            'categoryName' => $categoryName,
+            'categoryName' => $category->name,
             'description' => $category->description,
             'ogDescription' => $category->og_description,
             'categoryFilters' => $categoryFilters,
@@ -62,17 +55,12 @@ class CategoryController extends Controller
     protected function getBreadcrumbs($category)
     {
         $breadcrumbs = [];
-        $breadcrumbs[] = [
-            'name' => $category->name,
-            'slug' => $category->slug,
-        ];
-
-        while ($category->parent) {
-            $category = $category->parent;
+        while ($category) {
             $breadcrumbs[] = [
                 'name' => $category->name,
                 'slug' => $category->slug,
             ];
+            $category = $category->parent;
         }
 
         return array_reverse($breadcrumbs);
@@ -80,7 +68,9 @@ class CategoryController extends Controller
 
     private function getCategoryFilters($category)
     {
-        $filters = $category->products
+        $filters = $category->products()
+            ->with('attributes.values.products')
+            ->get()
             ->flatMap(fn ($product) => $product->attributes)
             ->groupBy('id')
             ->map(fn ($attributes) => [
@@ -107,12 +97,7 @@ class CategoryController extends Controller
     {
         $category = new Category;
         $category->name = $request->input('name');
-        if ($request->input('slug')) {
-            $category->slug = $request->input('slug');
-        } else {
-            $slug = Str::slug($request->input('name'));
-            $category->slug = $slug;
-        }
+        $category->slug = $request->input('slug') ?? Str::slug($request->input('name'));
         $category->description = $request->input('description');
         $category->og_description = $request->input('description');
         $category->save();
@@ -124,7 +109,7 @@ class CategoryController extends Controller
 
     public function getCategories()
     {
-        $categories = Category::all();
+        $categories = Category::select('id', 'name', 'slug', 'description', 'og_description')->get();
 
         return response()->json([
             'categories' => $categories,
@@ -133,7 +118,7 @@ class CategoryController extends Controller
 
     public function createSubcategory(CreateCategoryRequest $request)
     {
-        $category = Category::where('id', $request->input('categoryId'))->first();
+        $category = Category::find($request->input('categoryId'));
 
         if (! $category) {
             return response()->json([
@@ -143,12 +128,7 @@ class CategoryController extends Controller
 
         $subcategory = new Category;
         $subcategory->name = $request->input('name');
-        if ($request->input('slug')) {
-            $subcategory->slug = $request->input('slug');
-        } else {
-            $slug = Str::slug($request->input('name'));
-            $subcategory->slug = $slug;
-        }
+        $subcategory->slug = $request->input('slug') ?? Str::slug($request->input('name'));
         $subcategory->description = $request->input('description');
         $subcategory->og_description = $request->input('description');
         $category->children()->save($subcategory);
