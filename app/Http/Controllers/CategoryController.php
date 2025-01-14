@@ -131,30 +131,9 @@ class CategoryController extends Controller
         ]);
     }
 
-    public function getSubcategories(Request $request)
-    {
-        $category = Category::where('id', $request->input('categoryId'))->first();
-
-        if (! $category) {
-            return response()->json([
-                'name' => 'Category not found',
-            ], 404);
-        }
-
-        $subcategories = $category->children()->select('id', 'name')->get();
-
-        return response()->json([
-            'subcategories' => $subcategories,
-        ]);
-    }
-
     public function createSubcategory(CreateCategoryRequest $request)
     {
-        if ($request->input('subcategoryId')) {
-            $category = Category::where('id', $request->input('subcategoryId'))->first();
-        } else {
-            $category = Category::where('id', $request->input('categoryId'))->first();
-        }
+        $category = Category::where('id', $request->input('categoryId'))->first();
 
         if (! $category) {
             return response()->json([
@@ -172,17 +151,7 @@ class CategoryController extends Controller
         }
         $subcategory->description = $request->input('description');
         $subcategory->og_description = $request->input('description');
-
-        if ($request->input('categoryId')) {
-            $category->children()->save($subcategory);
-
-            return response()->json([
-                'message' => 'Subcategory created successfully.',
-            ]);
-        }
-
-        $subcategory->parent_id = $category->id;
-        $subcategory->save();
+        $category->children()->save($subcategory);
 
         return response()->json([
             'message' => 'Subcategory created successfully.',

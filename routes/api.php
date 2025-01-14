@@ -10,7 +10,6 @@ Route::get('/categories', [CategoryController::class, 'index']);
 Route::post('/admin/category/create', [CategoryController::class, 'createCategory']);
 Route::post('/admin/category/create-subcategory', [CategoryController::class, 'createSubcategory']);
 Route::get('/admin/category/get-categories', [CategoryController::class, 'getCategories']);
-Route::get('/admin/category/get-subcategories', [CategoryController::class, 'getSubcategories']);
 Route::get('/categories/{slug}/subcategories', [CategoryController::class, 'subcategories']);
 Route::get('/categories/{slug}/products/filter', [FilterController::class, 'filter']);
 
