@@ -147,4 +147,31 @@ class CategoryController extends Controller
             'subcategories' => $subcategories,
         ]);
     }
+
+    public function createSubcategory(CreateCategoryRequest $request)
+    {
+        $category = Category::where('id', $request->input('categoryId'))->first();
+
+        if (! $category) {
+            return response()->json([
+                'name' => 'Category not found',
+            ], 404);
+        }
+
+        $subcategory = new Category;
+        $subcategory->name = $request->input('name');
+        if ($request->input('slug')) {
+            $subcategory->slug = $request->input('slug');
+        } else {
+            $slug = Str::slug($request->input('name'));
+            $subcategory->slug = $slug;
+        }
+        $subcategory->description = $request->input('description');
+        $category->og_description = $request->input('description');
+        $category->children()->save($subcategory);
+
+        return response()->json([
+            'message' => 'Subcategory created successfully.',
+        ]);
+    }
 }
