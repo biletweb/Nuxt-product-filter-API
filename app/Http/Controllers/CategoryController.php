@@ -150,7 +150,11 @@ class CategoryController extends Controller
 
     public function createSubcategory(CreateCategoryRequest $request)
     {
-        $category = Category::where('id', $request->input('categoryId'))->first();
+        if ($request->input('subcategoryId')) {
+            $category = Category::where('id', $request->input('subcategoryId'))->first();
+        } else {
+            $category = Category::where('id', $request->input('categoryId'))->first();
+        }
 
         if (! $category) {
             return response()->json([
@@ -167,8 +171,18 @@ class CategoryController extends Controller
             $subcategory->slug = $slug;
         }
         $subcategory->description = $request->input('description');
-        $category->og_description = $request->input('description');
-        $category->children()->save($subcategory);
+        $subcategory->og_description = $request->input('description');
+
+        if ($request->input('categoryId')) {
+            $category->children()->save($subcategory);
+
+            return response()->json([
+                'message' => 'Subcategory created successfully.',
+            ]);
+        }
+
+        $subcategory->parent_id = $category->id;
+        $subcategory->save();
 
         return response()->json([
             'message' => 'Subcategory created successfully.',
